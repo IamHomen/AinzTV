@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1,
+            shrink-to-fit=no">
+        <meta name="description" content="Visuals HTML5 Template">
+
+        <title><%= animeData.title %> ~ AinzTV</title>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/images/favicon-light.png">
+
+        <!-- All CSS files -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/slick.css">
+        <link rel="stylesheet" href="/css/slick-theme.css">
+        <link rel="stylesheet" href="/css/app.css">
+        
+        <link rel="stylesheet" href="/css/aksVideoPlayer.css">
+        <link href="https://vjs.zencdn.net/8.22.0/video-js.css" rel="stylesheet" />
+        <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet"
+/>
+<!-- City -->
+        <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet"/>
+    </head>
+
+    <body>
+        <!-- Preloader -->
+        <div id="preloader">
+            <img src="/images/loader.gif" alt="Loading..." id="preloader-gif">
+        </div>
+        
+        <!-- Back To Top Start -->
+        <a href="#main-wrapper" id="backto-top" class="back-to-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+        <!-- Main Wrapper Start -->
+        <div id="main-wrapper" class="main-wrapper overflow-hidden">
+
+            <!-- Header Area Start -->
+            <header>
+                <div class="container-fluid">
+                    <div class="d-xl-block d-none">
+                        <nav class="navbar navbar-expand-xl p-0">
+                            <a class="navbar-brand dark-logo d-xl-none" href="/"><img alt="" src="/images/logo.png"></a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <div class="collapse navbar-collapse" id="mynavbar">
+                                <div class="col-xl-5">
+                                    <ul class="navbar-nav mainmenu m-0">
+                                        <li class="menu-item-has-children">
+                                            <a href="/">Home</a>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                                <div class="col-xl-2 text-center xl-logo">
+                                    <a class="navbar-brand m-0 p-0" href="/"><img alt="" src="/images/logo.png"></a>
+                                </div>
+                                <div class="col-xl-5 text-end">
+                                    <ul class="right-nav navbar-nav mainmenu align-items-center justify-content-end m-0">
+                                        <li>
+                                            <div class="input-box">
+                                                <form action="/">
+                                                    <input type="text" placeholder="Search..." required="">
+                                                    <button class="search" type="submit"><i class="far fa-search search-icon"></i></button>
+                                                </form>
+                                                <i class="fal fa-times close-icon"></i>
+                                            </div>
+                                        </li>
+                                        <li class="menu-item-has-children st-2">
+                                            <a class="notification" href="javascript:void(0);">
+                                                <i class="far fa-bell"></i>
+                                                <span class="notification-number">1</span>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item-has-children m-0 st-2">
+                                            <a href="javascript:void(0);"><img src="/images/user-1.png" class="me-2" alt=""><i class="far fa-angle-down "></i></a>
+                                            <ul class="submenu">
+                                                <li><a href="./login.html" class="mb-16 cus-btn filled color-dark">Log In</a></li>
+                                                <li><a href="./signup.html" class="m-0 cus-btn bordered">Sign Up</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header class="st-2">
+                <div class="container-fluid">
+                    <div class="mobile-menu">
+                        <div>
+                            <a class="navbar-brand" href="/"><img alt="" src="/images/logo-light.png"></a>
+                        </div>
+                        <div class="hamburger-menu">
+                            <div class="bar"></div>	
+                        </div>
+                    </div>
+                    <nav class="mobile-navar d-xl-none">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+            
+                        </ul>    
+                    </nav>
+                </div>
+            </header>
+            <!-- Header Area end -->
+
+            <!-- Anime detail banner Area start -->
+            <section class="anime-detail-banner detail pt-80">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-8">
+                            <div class="trailer mb-32">
+                                <div class="row">
+                                    <div class="col-lg-6 videoplayer no_variable_height">
+                                        <div id="video"></div>
+                                </div>
+                                    <div class="col-lg-6 detail_hide">
+                                        <div class="content">
+                                            <h2 class="color-white mb-8" id="anime_title"><%= animeData.title %></h2>
+                                            <p class="color-gray mb-32" id="anime_description" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 10; line-clamp: 10; -webkit-box-orient: vertical;"><%= animeData.description %></p>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#videoModal" class="cus-btn filled"><i class="far fa-play"></i> Trailer</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 detail_hide">
+                                    <div class="about-list mb-32 mb-xl-0">
+                                        <h3 class="color-white mb-16">About</h3>
+                                        <ul class="unstyled">
+                                            <li><h6>Type:</h6><h6 class="color-primary"><%= animeData.type %></h6></li>
+                                            <li><h6>Studio:</h6><h6 class="color-primary"><%= animeData.studios %></h6></li>
+                                            <li><h6>Date aired:</h6><h6><%= animeData.releaseDate %></h6></li>
+                                            <li><h6>Status:</h6><h6 class="color-primary"><%= animeData.status %></h6></li>
+                                            <li><h6>Genre:</h6><h6><%= animeData.genres %></h6></li>
+                                            <li><h6>Duration:</h6><h6><%= animeData.duration %></h6></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="episodes">
+                                <div class="episode-list">
+                                    <div class="row">
+                                        <% if (animeData.episodes.length > 0) { %>
+                                            <% animeData.episodes.forEach(episode => { %>
+                                                <div class="col-xl-12 col-lg-6">
+                                                    <div class="episode-list-item mb-24">
+                                                        <div class="img-block">
+                                                            <img src="https://natomanga-graphql-api.onrender.com/proxy-image?url=<%= episode.episodeSnapshot %>" style="width: 300px; height: 150px;" alt="Episode <%= episode.episodeNum %>">
+                                                            <div class="overlay"></div>
+                                                            <div class="box-content">
+                                                                <a href="<%= episode.episodeUrl %>" class="icon">
+                                                                    <div class="play-icon"><i class="fas fa-play"></i></div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-block">
+                                                            <h5 class="color-white mb-8">Episode <%= episode.episodeNum %></h5>
+                                                            <p class="color-white"><i class="far fa-clock"></i> <%= episode.episodeDuration %></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <div class="col-xl-12">
+                                                <h5 class="color-white text-center">No episodes yet</h5>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+            <!-- Anime detail Area end -->
+
+            <!-- Main Content Start -->
+            <div class="page-content">
+
+                <!-- Related Show Area start -->
+                <% if (animeData.relations.length > 0) { %>
+                    <section class="Related st-2 p-80">
+                        <div class="container-fluid">
+                            <h2 class="color-white mb-48">Related Shows</h2>
+                            <div class="row">
+                                <% animeData.relations.forEach(relation => { %>
+                                <div class="col-xl-3 col-lg-4 col-md-6" style="margin-bottom: 18px;">
+                                    <div class="featured-card mb-24 mb-xl-0">
+                                        <img src="https://natomanga-graphql-api.onrender.com/proxy-image?url=<%= relation.image %>" style="width: 100%; height: 300px;" alt="<%= relation.title %>">
+                                        <div class="content">
+                                            <a href="/anime/<%= relation.id %>">
+                                                <h3 class="color-white mb-32"><%= relation.title %></h3>
+                                            </a>
+                                            <h5 class="mb-32"><%= relation.relationType %> | <%= relation.type %> - <%= relation.releaseDate %></h5>
+                                            <div class="d-flex align-items-center">
+                                                <!--<a href="/anime/<%= relation.id %>" class="cus-btn filled">
+                                                    <i class="far fa-play"></i> Play
+                                                </a>-->
+                                                <a href="/anime/<%= relation.id %>" class="cus-btn bordered ms-16">
+                                                    <i class="fal fa-info-circle"></i> More Info
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </section>
+                    <% } %>
+                    
+                <!-- Related Show Area end -->
+                
+                <!-- Recommended Area start -->
+                <% if (animeData.recommendations.length > 0) { %>
+                    <section class="Recommended st-2 p-80">
+                        <div class="container-fluid">
+                            <h2 class="color-white mb-48">Recommended Shows</h2>
+                            <div class="row">
+                                <% animeData.recommendations.forEach(recommendation => { %>
+                                <div class="col-xl-3 col-lg-4 col-md-6">
+                                    <div class="featured-card mb-24">
+                                        <img src="https://natomanga-graphql-api.onrender.com/proxy-image?url=<%= recommendation.image %>" style="width: 100%; height: 300px;" alt="<%= recommendation.title %>">
+                                        <div class="content">
+                                            <a href="/anime/<%= recommendation.id %>">
+                                                <h3 class="color-white mb-32"><%= recommendation.title %></h3>
+                                            </a>
+                                            <h5 class="mb-32"><%= recommendation.type %> - <%= recommendation.releaseDate %></h5>
+                                            <div class="d-flex align-items-center">
+                                                <!--<a href="/anime/<%= recommendation.id %>" class="cus-btn filled">
+                                                    <i class="far fa-play"></i> Play
+                                                </a>-->
+                                                <a href="/anime/<%= recommendation.id %>" class="cus-btn bordered ms-16">
+                                                    <i class="fal fa-info-circle"></i> More Info
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </section>
+                    <% } %>
+                    
+                <!-- Recommended Area end -->
+
+                <!-- Comments & Reviews Area start -->
+                <section class="p-80">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-8">
+                                <div class="comments mb-64 mb-xl-0">
+                                    <h3 class="color-white mb-8">Comments</h3>
+                                    <p class="color-gray mb-32 link-text">We hope you have a good time browsing the comment section! <br> Please read our <b class="color-primary">Comments Policy </b>before commenting.</p>
+                                    <h4 class="color-white mb-24">Write a Comment</h4>
+                                    <div class="write-comment-box  mb-32">
+                                        <img src="images/p-1.png" alt="">
+                                        <form action="anime-detail.html">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                <button type="submit">Post</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <h4 class="color-white mb-32">50 Comments</h4>
+                                    <div class="comment-box  mb-32">
+                                        <img src="images/p-2.png" alt="">
+                                        <div class="text-block">
+                                            <div class="top-line mb-8">
+                                                <h5 class="color-white">@otaku_obsessed</h5>
+                                                <h6 class="color-white">5 minutes ago</h6>
+                                            </div>
+                                            <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                            <div class="bottom-row">
+                                                <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply1" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                            </div>
+                                            <div id="reply1" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                <div class="write-comment-box">
+                                                    <img src="images/p-5.png" alt="">
+                                                    <form action="anime-detail.html">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                            <button type="submit">Post</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="comment-box mb-32">
+                                        <img src="images/p-3.png" alt="">
+                                        <div class="text-block">
+                                            <div class="top-line mb-8">
+                                                <h5 class="color-white">@kawaii_kat</h5>
+                                                <h6 class="color-white">5 minutes ago</h6>
+                                            </div>
+                                            <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                            <div class="bottom-row">
+                                                <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply2" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                            </div>
+                                            <div id="reply2" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                <div class="write-comment-box">
+                                                    <img src="images/p-5.png" alt="">
+                                                    <form action="anime-detail.html">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                            <button type="submit">Post</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="accordion-button comment-btn active mb-32 color-white action-btn" data-bs-toggle="collapse" data-bs-target="#reply" aria-expanded="true" aria-controls="reply"><i class="fa fa-chevron-up"></i> Show 10 Replies</a>
+                                    <div id="reply" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                        <div class="extra-comments">
+                                            <div class="comment-box  mb-32">
+                                                <img src="images/p-4.png" alt="">
+                                                <div class="text-block">
+                                                    <div class="top-line mb-8">
+                                                        <h5 class="color-white">@otaku_obsessed</h5>
+                                                        <h6 class="color-white">5 minutes ago</h6>
+                                                    </div>
+                                                    <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                                    <div class="bottom-row">
+                                                        <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                        <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                        <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply3" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                                    </div>
+                                                    <div id="reply3" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                        <div class="write-comment-box">
+                                                            <img src="images/p-5.png" alt="">
+                                                            <form action="anime-detail.html">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                                    <button type="submit">Post</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="comment-box mb-32">
+                                                <img src="images/p-5.png" alt="">
+                                                <div class="text-block">
+                                                    <div class="top-line mb-8">
+                                                        <h5 class="color-white">@kawaii_kat</h5>
+                                                        <h6 class="color-white">5 minutes ago</h6>
+                                                    </div>
+                                                    <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                                    <div class="bottom-row">
+                                                        <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                        <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                        <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply4" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                                    </div>
+                                                    <div id="reply4" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                        <div class="write-comment-box">
+                                                            <img src="images/p-5.png" alt="">
+                                                            <form action="anime-detail.html">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                                    <button type="submit">Post</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="comment-box mb-32">
+                                                <img src="images/p-6.png" alt="">
+                                                <div class="text-block">
+                                                    <div class="top-line mb-8">
+                                                        <h5 class="color-white">@kawaii_kat</h5>
+                                                        <h6 class="color-white">5 minutes ago</h6>
+                                                    </div>
+                                                    <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                                    <div class="bottom-row">
+                                                        <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                        <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                        <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply8" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                                    </div>
+                                                    <div id="reply8" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                        <div class="write-comment-box">
+                                                            <img src="images/p-5.png" alt="">
+                                                            <form action="anime-detail.html">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                                    <button type="submit">Post</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="loadmorereply" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                        <div class="comment-box  mb-32">
+                                            <img src="images/p-4.png" alt="">
+                                            <div class="text-block">
+                                                <div class="top-line mb-8">
+                                                    <h5 class="color-white">@otaku_obsessed</h5>
+                                                    <h6 class="color-white">5 minutes ago</h6>
+                                                </div>
+                                                <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                                <div class="bottom-row">
+                                                    <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                    <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                    <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply6" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                                </div>
+                                                <div id="reply6" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                    <div class="write-comment-box">
+                                                        <img src="images/p-5.png" alt="">
+                                                        <form action="anime-detail.html">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                                <button type="submit">Post</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="comment-box mb-32">
+                                            <img src="images/p-5.png" alt="">
+                                            <div class="text-block">
+                                                <div class="top-line mb-8">
+                                                    <h5 class="color-white">@kawaii_kat</h5>
+                                                    <h6 class="color-white">5 minutes ago</h6>
+                                                </div>
+                                                <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                                <div class="bottom-row">
+                                                    <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                    <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                    <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply7" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                                </div>
+                                                <div id="reply7" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                    <div class="write-comment-box">
+                                                        <img src="images/p-5.png" alt="">
+                                                        <form action="anime-detail.html">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                                <button type="submit">Post</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="comment-box mb-32">
+                                            <img src="images/p-6.png" alt="">
+                                            <div class="text-block">
+                                                <div class="top-line mb-8">
+                                                    <h5 class="color-white">@kawaii_kat</h5>
+                                                    <h6 class="color-white">5 minutes ago</h6>
+                                                </div>
+                                                <p class="color-gray mb-16">Lorem ipsum dolor sit amet consectetur. Blandit luctus nunc nulla ut etiam penatibus gravida fusce. Id viverra erat nisl tincidunt risus elit. Lectu diam non leo volutpat nulla. Aliquet a at iaculis imperdiet diam tincidunt venenatis eget. Urna elementum rhoncus eu tristique lorem.</p>
+                                                <div class="bottom-row">
+                                                    <a href="" class="comment-btn"><i class="fa fa-thumbs-up"></i></a>
+                                                    <a href="" class="comment-btn"><i class="fa fa-thumbs-down"></i></a>
+                                                    <button class=" accordion-button comment-btn reply-btn" data-bs-toggle="collapse" data-bs-target="#reply5" aria-expanded="true"><span class="color-primary">Reply</span></button>
+                                                </div>
+                                                <div id="reply5" class="accordion-collapse collapse write-reply" data-bs-parent="#accordionExample">
+                                                    <div class="write-comment-box">
+                                                        <img src="images/p-5.png" alt="">
+                                                        <form action="anime-detail.html">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control p-0 border-0" name="search" required="" placeholder="Write your comment">
+                                                                <button type="submit">Post</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="loadmorebtn">
+                                        <a href="#" class="accordion-button comment-btn action-btn" data-bs-toggle="collapse" data-bs-target="#loadmorereply" aria-expanded="true" aria-controls="reply">Load More Comment<i class="fa fa-chevron-down"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4">
+                                <h3 class="color-white mb-32">Reviews</h3>
+                                <div class="reviews-slider">
+                                    <div class="review">
+                                        <div class="top-row mb-32">
+                                            <img src="images/p-1.png" alt="">
+                                            <h5 class="color-white">By: Aqua Sama</h5>
+                                        </div>
+                                        <div class="review-text">
+                                            <p class="color-gray mb-16">
+                                                Lorem ipsum dolor sit amet consectetur. Magna aliquam tempor sed netus fames aliquet. Dolor quis morbi tellus aliquet felis vitae nec molestie. Augue tincidunt amet purus donec tortor fermentum massa. Sit lorem sed faucibus pharetra morbi.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                Vestibulum malesuada ut donec nunc ullamcorper. Eget quisque blandit scelerisque pretium diam quis viverra lacus sapien. Aliquet malesuada sit cursus morbi. Mattis risus arcu natoque molestie volutpat vitae. Purus sed dolor sed ipsum dignissim ultricies. Sed aliquam justo non ullamcorper id.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                A quis orci urna enim volutpat lobortis iaculis lorem. Faucibus donec lorem orci aenean sed. Gravida porttitor enim elementum dis habitant pellentesque. Auctor montes ultricies et imperdiet nisl gravida tortor accumsan.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                Eu pulvinar semper cras eget. Nibh velit auctor interdum adipiscing vitae enim mattis. Quam vel varius pellentesque sit sed duis odio et dictumst. Etiam eget eget sed eu nam sollicitudin. Aliquam aenean vulputate pulvinar nulla lorem penatibus et. Id sed dolor ac semper vel ullamcorper id.
+                                            </p>
+                                            <p class="color-gray">
+                                                Pellentesque purus at feugiat gravida erat est purus id. Morbi phasellus lectus in purus sit aenean pellentesque ipsum. Morbi interdum semper semper lobortis nulla id. Condimentum dui vestibulum aliquam.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="review">
+                                        <div class="top-row mb-32">
+                                            <img src="images/p-2.png" alt="">
+                                            <h5 class="color-white">By: Cosplay Queen</h5>  
+                                        </div>
+                                        <div class="review-text">
+                                            <p class="color-gray mb-16">
+                                                Lorem ipsum dolor sit amet consectetur. Magna aliquam tempor sed netus fames aliquet. Dolor quis morbi tellus aliquet felis vitae nec molestie. Augue tincidunt amet purus donec tortor fermentum massa. Sit lorem sed faucibus pharetra morbi.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                Vestibulum malesuada ut donec nunc ullamcorper. Eget quisque blandit scelerisque pretium diam quis viverra lacus sapien. Aliquet malesuada sit cursus morbi. Mattis risus arcu natoque molestie volutpat vitae. Purus sed dolor sed ipsum dignissim ultricies. Sed aliquam justo non ullamcorper id.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                A quis orci urna enim volutpat lobortis iaculis lorem. Faucibus donec lorem orci aenean sed. Gravida porttitor enim elementum dis habitant pellentesque. Auctor montes ultricies et imperdiet nisl gravida tortor accumsan.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                Eu pulvinar semper cras eget. Nibh velit auctor interdum adipiscing vitae enim mattis. Quam vel varius pellentesque sit sed duis odio et dictumst. Etiam eget eget sed eu nam sollicitudin. Aliquam aenean vulputate pulvinar nulla lorem penatibus et. Id sed dolor ac semper vel ullamcorper id.
+                                            </p>
+                                            <p class="color-gray">
+                                                Pellentesque purus at feugiat gravida erat est purus id. Morbi phasellus lectus in purus sit aenean pellentesque ipsum. Morbi interdum semper semper lobortis nulla id. Condimentum dui vestibulum aliquam.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="review">
+                                        <div class="top-row mb-32">
+                                            <img src="/images/p-3.png" alt="">
+                                            <h5 class="color-white">By: Kawaii Kat</h5>
+                                        </div>
+                                        <div class="review-text">
+                                            <p class="color-gray mb-16">
+                                                Lorem ipsum dolor sit amet consectetur. Magna aliquam tempor sed netus fames aliquet. Dolor quis morbi tellus aliquet felis vitae nec molestie. Augue tincidunt amet purus donec tortor fermentum massa. Sit lorem sed faucibus pharetra morbi.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                Vestibulum malesuada ut donec nunc ullamcorper. Eget quisque blandit scelerisque pretium diam quis viverra lacus sapien. Aliquet malesuada sit cursus morbi. Mattis risus arcu natoque molestie volutpat vitae. Purus sed dolor sed ipsum dignissim ultricies. Sed aliquam justo non ullamcorper id.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                A quis orci urna enim volutpat lobortis iaculis lorem. Faucibus donec lorem orci aenean sed. Gravida porttitor enim elementum dis habitant pellentesque. Auctor montes ultricies et imperdiet nisl gravida tortor accumsan.
+                                            </p>
+                                            <p class="color-gray mb-16">
+                                                Eu pulvinar semper cras eget. Nibh velit auctor interdum adipiscing vitae enim mattis. Quam vel varius pellentesque sit sed duis odio et dictumst. Etiam eget eget sed eu nam sollicitudin. Aliquam aenean vulputate pulvinar nulla lorem penatibus et. Id sed dolor ac semper vel ullamcorper id.
+                                            </p>
+                                            <p class="color-gray">
+                                                Pellentesque purus at feugiat gravida erat est purus id. Morbi phasellus lectus in purus sit aenean pellentesque ipsum. Morbi interdum semper semper lobortis nulla id. Condimentum dui vestibulum aliquam.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Comments & Reviews Area end -->
+
+            </div>
+            <!-- Main Content End -->
+
+            <!-- footer Area start -->
+            <footer class="footer pt-80">
+                <div class="container-fluid">
+                    <ul class="social-icon unstyled mb-32">
+                        <li> <a href=""><img src="/images/instagram.png" alt=""></a></li>
+                        <li> <a href=""><img src="/images/facebook.png" alt=""></a></li>
+                        <li> <a href=""><img src="/images/twitter.png" alt=""></a></li>
+                    </ul>
+                    <div class="copyright-text">
+                        <div class="row">
+                            <div class="col-lg-4 offset-lg-4">
+                                <p class="color-gray mb-lg-0 mb-32">All rights reserved by Visual ©2024.</p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end text-center">
+                                <a href="" class="ps-0"><p class="color-gray">Privacy Policy</p></a>
+                                <a href=""><p class="color-gray">Comments Policy</p></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- footer Area end --> 
+
+            <!-- modal-popup area start  -->
+            <div class="modal fade" id="videoModal" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="top_bar">
+                            <h4 class="modal-title">Demon Slayer Season 4</h4>
+                            <button type="button" class="close" id="closeVideoModalButton" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i> <b>Close</b></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <video controls="" title="Video">
+                                <source src="/media/movie-video.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal-popup area end  -->
+        </div>
+        <!-- Jquery Js -->
+        <script src="/js/jquery-3.6.3.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/jquery.countdown.min.js"></script>
+        <script src="/js/slick.min.js"></script>
+        <script src="/js/jquery-appear.js"></script>
+        <script src="/js/jquery-validator.js"></script>
+        <script src="/js/aksVideoPlayer.js"></script>
+        <!-- Site Scripts -->
+        <script src="/js/app.js"></script>
+        <script src="https://vjs.zencdn.net/8.22.0/video.min.js"></script>
+
+</body></html>
