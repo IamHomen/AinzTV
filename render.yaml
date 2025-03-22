@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: ainz-tv # Name of the service
+    env: docker
+    repo: https://github.com/IamHomen/AinzTV.git
+    plan: free
+    branch: main
+    envVars:
+      - key: PORT
+        value: 4000
