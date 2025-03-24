@@ -63,6 +63,7 @@ app.get("/anime/:id/:session?", async (req, res) => {
         const { id, session } = req.params;
         const cacheKey = `anime-${id}`;
         let animeData = cache.get(cacheKey);
+        let trailerUrl;
 
         if (!animeData) {
             // ✅ Fetch Anime Info
@@ -90,10 +91,61 @@ app.get("/anime/:id/:session?", async (req, res) => {
                 releaseDate: $('div.anime-info p:contains("Aired:")').text().split("to")[0].replace("Aired:", "").trim(),
                 studios: $('div.anime-info p:contains("Studio:")').text().replace("Studio:", "").trim().split("\n"),
                 totalEpisodes: parseInt($('div.anime-info p:contains("Episodes:")').text().replace("Episodes:", ""), 10),
+                anilistId: $('a[href*="anilist.co/anime/"]').attr("href")?.match(/anime\/(\d+)/)?.[1],
                 relations: [],
                 recommendations: [],
                 episodes: [],
             };
+            
+            const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
+            
+            async function getAnimeTrailer(anilistId) {
+                const query = `
+                    query ($id: Int) {
+                      Media(id: $id, type: ANIME) {
+                        id
+                        title {
+                          romaji
+                          english
+                          native
+                        }
+                        trailer {
+                          id
+                          site
+                          thumbnail
+                        }
+                      }
+                    }
+                `;
+            
+                const variables = { id: anilistId };
+            
+                try {
+                    const response = await fetch(ANILIST_GRAPHQL_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query, variables }),
+                    });
+            
+                    const { data } = await response.json();
+                    const anime = data?.Media;
+                    
+                    if (!anime || !anime.trailer) {
+                        console.log("No trailer found.");
+                        return null;
+                    }
+            
+                    trailerUrl =
+                        anime.trailer.site === "youtube"
+                            ? `https://www.youtube.com/embed/${anime.trailer.id}`
+                            : `https://www.dailymotion.com/video/${anime.trailer.id}`;
+            
+                    return { title: anime.title.romaji, trailerUrl, thumbnail: anime.trailer.thumbnail };
+                } catch (error) {
+                    console.error("Error fetching AniList data:", error);
+                }
+            }
+            getAnimeTrailer(animeData.anilistId);
 
             // ✅ Fetch Episodes
             try {
@@ -116,11 +168,14 @@ app.get("/anime/:id/:session?", async (req, res) => {
         }
 
         let sources = [];
+        let currentEpisode = null;
         if (session) {
             // ✅ Fetch episode sources
             const episodeUrl = `${ANIMEPAHE_BASE_URL}/play/${id}/${session}`;
             const episodeResponse = await axios.get(episodeUrl, { headers: Headers(session.split('/')[0]) });
             const $ = cheerio.load(episodeResponse.data);
+
+            currentEpisode = $("div.episode-menu > button").text();
 
             const links = $("div#resolutionMenu > button")
                 .map((i, el) => ({
@@ -141,7 +196,7 @@ app.get("/anime/:id/:session?", async (req, res) => {
         }
 
         // ✅ Render anime.ejs with BOTH animeData and sources
-        res.render("anime", { animeData, sources });
+        res.render("anime", { animeData, sources, currentEpisode, trailerUrl });
         console.log(sources);
 
     } catch (error) {

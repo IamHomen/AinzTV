@@ -7,7 +7,7 @@
             shrink-to-fit=no">
         <meta name="description" content="Visuals HTML5 Template">
 
-        <title><%= animeData.title %> ~ AinzTV</title>
+        <title><%= animeData.title %> <%= currentEpisode %> ~ AinzTV</title>
 
         <!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="/images/favicon-light.png">
@@ -115,15 +115,20 @@
                     <div class="row">
                         <div class="col-xl-8">
                             <div class="trailer mb-32">
+                                <h4 style="margin-bottom: 15px; color: #fff; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"><%= animeData.title %> <%= currentEpisode %></h4>
                                 <div class="row">
                                     <div class="col-lg-6 videoplayer no_variable_height">
-                                            <video class="players" id="player" controls></video>
+                                            <video class="players" id="player" poster="<%= animeData.animeCover %>" controls></video>
                                     </div>
                                     <div class="col-lg-6 detail_hide">
                                         <div class="content">
                                             <h2 class="color-white mb-8" id="anime_title"><%= animeData.title %></h2>
                                             <p class="color-gray mb-32" id="anime_description" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 10; line-clamp: 10; -webkit-box-orient: vertical;"><%= animeData.description %></p>
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#videoModal" class="cus-btn filled"><i class="far fa-play"></i> Trailer</a>
+                                            <% if (trailerUrl) { %>
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#videoModal" class="cus-btn filled">
+                                                  <i class="far fa-play"></i> Trailer
+                                                </a>
+                                              <% } %>
                                         </div>
                                     </div>
                                 </div>
@@ -586,7 +591,7 @@
                     <div class="copyright-text">
                         <div class="row">
                             <div class="col-lg-4 offset-lg-4">
-                                <p class="color-gray mb-lg-0 mb-32">All rights reserved by Visual ©2024.</p>
+                                <p class="color-gray mb-lg-0 mb-32">All rights reserved by AinzTV ©2024.</p>
                             </div>
                             <div class="col-lg-4 text-lg-end text-center">
                                 <a href="" class="ps-0"><p class="color-gray">Privacy Policy</p></a>
@@ -603,15 +608,18 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="top_bar">
-                            <h4 class="modal-title">Demon Slayer Season 4</h4>
+                            <h4 class="modal-title"><%= animeData.title %> Official Trailer</h4>
                             <button type="button" class="close" id="closeVideoModalButton" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times"></i> <b>Close</b></span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <video controls="" title="Video">
-                                <source src="/media/movie-video.mp4" type="video/mp4">
-                            </video>
+                            <iframe src="<%= trailerUrl %>" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen>
+                            </iframe>
                         </div>
                     </div>
                 </div>
