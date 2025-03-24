@@ -1,11 +1,3 @@
-  /*!
- * aksVideoPlayer v1.0.0
- * Video Player
- * (c) 2021 Ahmet Aksungur
- * MIT License
- * https://github.com/Ahmetaksungur
- */
-
 (function ($) {
     "use strict";
     $.fn.aksVideoPlayer = function (options) {

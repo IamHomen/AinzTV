@@ -1,25 +1,5 @@
 @charset "UTF-8";
-/*---------------------------------------------"
-Template Name: Visuals
-Template URL: https://techpedia.co.uk/template/visuals
-Description: Visual Entertainment Streaming And Blog
-Version: 1.0.0
 
-===============================================   
-STYLE SHEET INDEXING
-|
-|___ Fonts
-|___ Variables
-|___ Reset Styles
-|___ Responsive
-|___ Spacing
-|___ Helper Classes
-|___ Buttons
-|___ Headings
-|___ Layout Styles
-|___ END STYLE SHEET INDEXING
-
---------------------------------------------*/
 /*-------------------------
     Fonts
 -------------------------*/
@@ -643,10 +623,43 @@ Helpers
   color: #58DDA3;
 }
 
-video {
-  width: 100%;
+/*#video-player {
+  width: 100% !important;
+  height: 100vh !important; 
+  max-height: 100vh !important;
+  object-fit: contain;
 }
-
+.plyr--full-ui.plyr video {
+  width: 100% !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  object-fit: cover;
+}
+@media (max-width: 992px) {
+  #video-player{
+    height: 450px !important;
+    margin-bottom: 0px;
+  }
+}
+@media (max-width: 767px) {
+  #video-player{
+    height: 350px !important;
+  }
+}
+@media (max-width: 575px) {
+  #video-player{
+    height: 300px !important;
+  }
+}
+@media (max-width: 492px) {
+  #video-player{
+    height: 250px !important;
+  }
+}
+#video-player{
+  height: 325px !important;
+}
+*/
 /*----------------------------------------*/
 /*  03. SPACE CSS START
 /*----------------------------------------*/
@@ -3791,13 +3804,11 @@ header.st-2 .icon-arrow:hover {
 
 .episodes {
   position: relative;
-  padding-top: 70px;
 }
 .episodes .season-dropdown {
   position: absolute;
   top: 0;
   z-index: 10;
-  margin-bottom: 16px;
   background: rgba(0, 0, 0, 0.2);
   padding: 12px 16px;
   border-radius: 25px;
@@ -4060,3 +4071,26 @@ header.st-2 .icon-arrow:hover {
 }
 
 /*# sourceMappingURL=app.css.map */
+
+.variable_height {
+  height: auto !important;
+  max-height: 100vh; /* Ensures it doesn't go beyond screen */
+  border-radius: 15px; /* Adjust as needed */
+  overflow: hidden; /* Ensures corners are clipped */
+  margin-bottom: 15px;
+}
+
+.videoplayer {
+  transition: all 0.5s ease-in-out;
+  border-radius: 15px; /* Adjust as needed */
+  overflow: hidden; /* Ensures corners are clipped */
+  margin-bottom: 15px;
+}
+.videoplayer video {
+  border-radius: 15px; /* Adjust as needed */
+  overflow: hidden !important; /* Ensures corners are clipped */
+}
+.videoplayer .plyr {
+  border-radius: 15px; /* Adjust as needed */
+  overflow: hidden !important; /* Ensures corners are clipped */
+}
