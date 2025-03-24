@@ -142,7 +142,7 @@ app.get("/anime/:id/:session?", async (req, res) => {
 
         // ✅ Render anime.ejs with BOTH animeData and sources
         res.render("anime", { animeData, sources });
-        console.log("Server.js", sources);
+        console.log(sources);
 
     } catch (error) {
         console.error("Error fetching anime or episode sources:", error.message);
