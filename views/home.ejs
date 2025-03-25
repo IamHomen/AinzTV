@@ -105,216 +105,36 @@
 
             <!-- Hero Area start -->
             <section class="hero-banner-1 variable-width">   
-                <div class="item sm-active sm-dnone">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176496-xCNtU4llsUpu.png" class="slider-image" alt="">
-                    <div class="content">
-                        <a href="/anime/9a16dfb8-8ffc-a0b0-6508-1b291afa04a7"><h2 class="color-white mb-32">Solo Leveling Season 2: Arise from the Shadow</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Action</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minute</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/9a16dfb8-8ffc-a0b0-6508-1b291afa04a7" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/9a16dfb8-8ffc-a0b0-6508-1b291afa04a7" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active sm-dnone">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177709-jBQ965JZG0l8.png" class="slider-image" alt="Sakamoto Days">
-                    <div class="content">
-                        <a href="/anime/cca02b8c-402f-b5a1-d23f-b1e75fd7ec89"><h2 class="color-white mb-32">Sakamoto Days</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>18+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Action</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minutes</h5>
-                        </div>
-                    <div>
-                        <a href="/anime/cca02b8c-402f-b5a1-d23f-b1e75fd7ec89" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                        <a href="/anime/cca02b8c-402f-b5a1-d23f-b1e75fd7ec89" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                    </div>
-                    </div>
-                </div>
-                <div class="item sm-active sm-dnone">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx176301-AclxpmzlKoBM.jpg" class="slider-image" alt="he Apothecary Diaries Season 2">
-                    <div class="content">
-                        <a href="/anime/44302c02-ac39-d56b-1bf4-a7e9628f9c8d"><h2 class="color-white mb-32">The Apothecary Diaries Season 2</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Mystery</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>24 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/44302c02-ac39-d56b-1bf4-a7e9628f9c8d" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/44302c02-ac39-d56b-1bf4-a7e9628f9c8d" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
+                <% trendingList.forEach(anime => { %>
+                    <div class="item sm-active sm-dnone">
+                        <img src="<%= anime.anilist_cover %>" class="slider-image" alt="<%= anime.animepahe.title %>">
+                        <div class="content">
+                            <a href="/anime/<%= anime.animepahe.session %>">
+                                <h2 class="color-white mb-32"><%= anime.animepahe.title %></h2>
+                            </a>
+                            <ul class="card-tag unstyled">
+                                <li><h5 class="color-primary">New</h5></li>
+                                <li class="tag"><h6>13+</h6></li>
+                                <li class="tag active"><h6>HD</h6></li>
+                                <li class="tag"><h6><%= anime.type %></h6></li>
+                            </ul>
+                            <div class="time mb-32">
+                                <h5>Episode <%= anime.nextAiringEpisode.episode %> - <%= anime.nextAiringEpisode.airingAt %></h5> 
+                                <h5><%= anime.duration %></h5>
+                            </div>
+                            <div>
+                                <a href="/anime/<%= anime.animepahe.session %>" class="cus-btn filled">
+                                    <i class="far fa-play"></i> Play
+                                </a>
+                                <a href="/anime/<%= anime.animepahe.session %>" class="cus-btn bordered ms-16">
+                                    <i class="fal fa-info-circle"></i> More Info
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="item sm-active active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx172019-y0dLlAdingR2.jpg" class="slider-image" alt="Dr. Stone: Science Future">
-                    <div class="content">
-                        <a href="/anime/16b6c27a-3b85-0e65-ace7-cac43f3809b0"><h2 class="color-white mb-32">Dr. Stone: Science Future</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Sci-Fi</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>24 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/16b6c27a-3b85-0e65-ace7-cac43f3809b0" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/16b6c27a-3b85-0e65-ace7-cac43f3809b0" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx172258-CFvhqor0blLV.jpg" class="slider-image" alt="The 100 Girlfriends Who Really, Really, Really, Really, Really Love You Season 2">
-                    <div class="content">
-                        <a href="/anime/9250e982-1347-8a10-6da8-2a41b5f664d7"><h2 class="color-white mb-32">The 100 Girlfriends Who Really, Really, Really, Really, Really Love You Season 2</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Romance</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/9250e982-1347-8a10-6da8-2a41b5f664d7" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/9250e982-1347-8a10-6da8-2a41b5f664d7" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178462-YW6BgSGGP4az.jpg" class="slider-image" alt="I'm Getting Married to a Girl I Hate in My Class">
-                    <div class="content">
-                        <a href="/anime/5a1ab939-60e6-f3d6-ca8d-88824743fe54"><h2 class="color-white mb-32">I'm Getting Married to a Girl I Hate in My Class</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Romance</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/5a1ab939-60e6-f3d6-ca8d-88824743fe54" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/5a1ab939-60e6-f3d6-ca8d-88824743fe54" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx167143-SoFo5kOvlkbO.jpg" class="slider-image" alt="I May Be a Guild Receptionist, but I'll Solo Any Boss to Clock Out on Time">
-                    <div class="content">
-                        <a href="/anime/fcac412b-ce48-3ebc-5ef3-c4fb71f98c9b"><h2 class="color-white mb-32">I May Be a Guild Receptionist, but I'll Solo Any Boss to Clock Out on Time</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Adventure</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>24 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/fcac412b-ce48-3ebc-5ef3-c4fb71f98c9b" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/fcac412b-ce48-3ebc-5ef3-c4fb71f98c9b" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx169441-wIQe1xfCc1XS.jpg" class="slider-image" alt="My Happy Marriage Season 2">
-                    <div class="content">
-                        <a href="/anime/a30e0bd5-7158-2421-f91a-3befec5a2358"><h2 class="color-white mb-32">My Happy Marriage Season 2</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Romance</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/a30e0bd5-7158-2421-f91a-3befec5a2358" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/a30e0bd5-7158-2421-f91a-3befec5a2358" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx175443-yeamxYxCwLSe.jpg" class="slider-image" alt="Honey Lemon Soda">
-                    <div class="content">
-                        <a href="/anime/e14ed9b6-02fc-3cb9-b2c7-a5e954d55593"><h2 class="color-white mb-32">Honey Lemon Soda</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>18+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Romance</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>22 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/e14ed9b6-02fc-3cb9-b2c7-a5e954d55593" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/e14ed9b6-02fc-3cb9-b2c7-a5e954d55593" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177552-JPx2rIXeprne.jpg" class="slider-image" alt="Medaka Kuroiwa is Impervious to My Charms">
-                    <div class="content">
-                        <a href="/anime/a717dbed-5557-4c05-f52a-3dc3e94d421c"><h2 class="color-white mb-32">Medaka Kuroiwa is Impervious to My Charms</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Comedy</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/a717dbed-5557-4c05-f52a-3dc3e94d421c" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/a717dbed-5557-4c05-f52a-3dc3e94d421c" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="item sm-active">
-                    <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177506-in4J0GNzjOZL.jpg" class="slider-image" alt="Possibly the Greatest Alchemist of All Time">
-                    <div class="content">
-                        <a href="/anime/4f7dca16-a44d-e615-d885-75aaa3f13a3c"><h2 class="color-white mb-32">Possibly the Greatest Alchemist of All Time</h2></a>
-                        <ul class="card-tag unstyled">
-                            <li><h5 class="color-primary">New</h5></li>
-                            <li class="tag"><h6>13+</h6></li>
-                            <li class="tag active"><h6>HD</h6></li>
-                            <li class="tag"><h6>Adventure</h6></li>
-                        </ul>
-                        <div class="time mb-32">
-                            <h5>TV</h5> <h5>23 minutes</h5>
-                        </div>
-                        <div>
-                            <a href="/anime/4f7dca16-a44d-e615-d885-75aaa3f13a3c" class="cus-btn filled"><i class="far fa-play"></i> Play</a>
-                            <a href="/anime/4f7dca16-a44d-e615-d885-75aaa3f13a3c" class="cus-btn bordered ms-16"><i class="fal fa-info-circle"></i> More Info</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                <% }); %>
+            </section>            
+            
             <!-- Hero Area end -->
             
             <!-- Main Content Start -->
@@ -602,7 +422,7 @@
                                         <li><h5 class="color-white">October 2025</h5></li>
                                     </ul>
                                     <h5 class="color-white mb-32"><b class="color-primary">Studio:</b> J.C.STAFF</h5>
-                                    <a href="#" class="cus-btn filled mb-32"><i class="far fa-play"></i> Watch Trailer</a>
+                                    <a href="https://www.youtube.com/embed/j1hqIrLqOso?si=sMIkmFusZFJt6lS8" class="cus-btn filled mb-32"><i class="far fa-play"></i> Watch Trailer</a>
                                     <ul class="timer countdown mb-0">
                                         <li>192<span>Days</span></li>
                                         <li>14<span>Hrs</span></li>
