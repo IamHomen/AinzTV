@@ -119,7 +119,7 @@
         $(".hero-banner-1").slick({
           slidesToShow: 1,
           slidesToScroll: 1,
-          arrows: false,
+          arrows: true,
           centerMode: false,
           infinite: true,
           swipeToSlide: true,
@@ -559,9 +559,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // Set Plyr controls with quality selection
       const defaultOptions = {
         controls: [
-          'play-large', 'restart', 'rewind', 'play', 'fast-forward', 'progress',
-          'current-time', 'duration', 'mute', 'volume', 'captions', 'settings',
-          'pip', 'airplay', 'download', 'fullscreen'
+          'play-large', 'rewind', 'play', 'fast-forward', 'progress',
+          'current-time', 'duration', 'mute', 'volume', 'settings',
+          'pip', 'fullscreen'
         ],
         quality: {
           default: selectedSource.label,

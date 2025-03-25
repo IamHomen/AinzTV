@@ -2309,6 +2309,12 @@ header.st-2 .icon-arrow:hover {
   .hero-banner-1 .item .content {
     width: 100%;
   }
+  .hero-banner-1 .item .slider-image {
+    object-fit: fill;
+    object-position: center;
+    height: 100%;
+    width: 100%;
+  }
 }
 .hero-banner-1 .item .content .card-tag {
   display: flex;
