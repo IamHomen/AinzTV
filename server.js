@@ -24,14 +24,19 @@ app.use(express.static(path.join(__dirname, "public")));
 const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
 const ANIMEPAHE_BASE_URL = "https://animepahe.ru";
 
+
 // 🌟 Fetch anime data and render home.ejs
 app.get("/", async (req, res) => {
-    const cacheKey = "recent-anime";
-    const cachedData = cache.get(cacheKey);
+    const cacheKeyAnime = "recent-anime";
+    const cacheKeyTrending = "trending-anime";
 
-    if (cachedData) {
-        console.log("✅ Serving from cache");
-        return res.render("home", { animeList: cachedData });
+    const cachedAnime = cache.get(cacheKeyAnime);
+    const cachedTrending = cache.get(cacheKeyTrending);
+
+    // ✅ Serve from cache if available
+    if (cachedAnime && cachedTrending) {
+        console.log("✅ Serving both anime list and trending list from cache");
+        return res.render("home", { animeList: cachedAnime, trendingList: cachedTrending });
     }
 
     const url = `${ANIMEPAHE_BASE_URL}/api?m=airing&page=1`;
@@ -43,17 +48,33 @@ app.get("/", async (req, res) => {
     };
 
     try {
-        const response = await axios.get(url, { headers });
-        const animeList = response.data.data || [];
+        // ✅ Fetch mappedResults only if not cached
+        let mappedResults;
+        if (cachedTrending) {
+            console.log("✅ Serving mapped results from cache");
+            mappedResults = cachedTrending;
+        } else {
+            mappedResults = await mapAniListToAnimePahe();
+            cache.set(cacheKeyTrending, mappedResults, 1800); // Cache for 30 minutes
+            console.log("🚀 Fetched mapped results and cached");
+        }
 
-        // ✅ Store in cache for 30 minutes
-        cache.set(cacheKey, animeList, 1800);
-        console.log("🚀 Fetched from API and cached");
+        // ✅ Fetch recent anime if not cached
+        let animeList;
+        if (cachedAnime) {
+            console.log("✅ Serving anime list from cache");
+            animeList = cachedAnime;
+        } else {
+            const response = await axios.get(url, { headers });
+            animeList = response.data.data || [];
+            cache.set(cacheKeyAnime, animeList, 1800); // Cache for 30 minutes
+            console.log("🚀 Fetched anime list and cached");
+        }
 
-        res.render("home", { animeList });
+        res.render("home", { animeList, trendingList: mappedResults });
     } catch (error) {
         console.error("❌ Error fetching data:", error);
-        res.render("home", { animeList: [] });
+        res.render("home", { animeList: [], trendingList: [] });
     }
 });
 
@@ -96,9 +117,9 @@ app.get("/anime/:id/:session?", async (req, res) => {
                 recommendations: [],
                 episodes: [],
             };
-            
+
             const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
-            
+
             async function getAnimeTrailer(anilistId) {
                 const query = `
                     query ($id: Int) {
@@ -117,29 +138,29 @@ app.get("/anime/:id/:session?", async (req, res) => {
                       }
                     }
                 `;
-            
+
                 const variables = { id: anilistId };
-            
+
                 try {
                     const response = await fetch(ANILIST_GRAPHQL_URL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ query, variables }),
                     });
-            
+
                     const { data } = await response.json();
                     const anime = data?.Media;
-                    
+
                     if (!anime || !anime.trailer) {
                         console.log("No trailer found.");
                         return null;
                     }
-            
+
                     trailerUrl =
                         anime.trailer.site === "youtube"
                             ? `https://www.youtube.com/embed/${anime.trailer.id}`
                             : `https://www.dailymotion.com/video/${anime.trailer.id}`;
-            
+
                     return { title: anime.title.romaji, trailerUrl, thumbnail: anime.trailer.thumbnail };
                 } catch (error) {
                     console.error("Error fetching AniList data:", error);
@@ -224,6 +245,121 @@ function Headers(sessionId) {
         "user-agent": USER_AGENT,
     };
 }
+
+const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
+const ANIMEPAHE_SEARCH_URL = "https://animepahe.ru/api";
+
+// ✅ Step 1: Query AniList API for Trending Anime
+async function getTrendingAnime() {
+    const query = `
+        query {
+            Page(perPage: 10) { 
+                media(type: ANIME, sort: TRENDING_DESC) {
+                    id
+                    type
+                    duration
+                    nextAiringEpisode {
+                        airingAt
+                        episode
+                    }
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(ANILIST_GRAPHQL_URL, { query });
+        return response.data.data.Page.media;
+    } catch (error) {
+        console.error("Error fetching trending anime from AniList:", error);
+        return [];
+    }
+}
+
+const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+    "Referer": ANIMEPAHE_BASE_URL,
+    "Accept-Language": "en-US,en;q=0.9",
+    "Cookie": "__ddg2_=; res=1080; aud=jpn;",
+};
+
+// ✅ Step 2: Search AnimePahe by AniList ID
+async function searchAnimePahe(anilistId, title) {
+    try {
+        const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`,  { headers });
+        const results = response.data.data;
+
+        if (!results || results.length === 0) {
+            return null;
+        }
+
+        // Find anime with matching AniList ID
+        return results.find(anime => anime.anilist_id === anilistId) || results[0]; // Fallback to first result
+    } catch (error) {
+        console.error(`Error searching AnimePahe for ${title}:`, error);
+        return null;
+    }
+}
+
+// ✅ Step 3: Map AniList to AnimePahe
+async function mapAniListToAnimePahe() {
+    const trendingAnime = await getTrendingAnime();
+    let mappedResults = [];
+
+    const formatAiringDate = (timestamp) => {
+        if (!timestamp) return "TBA";
+        const date = new Date(timestamp * 1000);
+        return date.toLocaleString("en-US", { 
+            weekday: "short", 
+            month: "short", 
+            day: "2-digit", 
+            year: "numeric", 
+            hour: "2-digit", 
+            minute: "2-digit", 
+            hour12: true 
+        });
+    };
+
+    for (const anime of trendingAnime) {
+        const { id, title } = anime;
+        const searchTitle = title.romaji || title.english || title.native;
+        const animeCover = anime.coverImage.extraLarge;
+        const type = anime.type;
+        const duration = anime.duration ? `${anime.duration} min` : "Unknown";
+        
+        const nextAiringEpisode = anime.nextAiringEpisode 
+            ? {
+                episode: anime.nextAiringEpisode.episode,
+                airingAt: formatAiringDate(anime.nextAiringEpisode.airingAt)
+            } 
+            : { episode: "?", airingAt: "TBA" };
+
+        const animepaheResult = await searchAnimePahe(id, searchTitle);
+
+        mappedResults.push({
+            anilist_id: id,
+            anilist_title: searchTitle,
+            anilist_cover: animeCover,
+            type,
+            duration,
+            nextAiringEpisode,
+            animepahe: animepaheResult
+                ? { session: animepaheResult.session, title: animepaheResult.title }
+                : { session: "#", title: "Unknown" }
+        });
+    }
+
+    return mappedResults;
+}
+
 
 // Start the server
 const PORT = process.env.PORT || 4000;
