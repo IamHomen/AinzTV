@@ -23,20 +23,31 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
 const ANIMEPAHE_BASE_URL = "https://animepahe.ru";
+const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
+const ANIMEPAHE_SEARCH_URL = "https://animepahe.ru/api";
+
+const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+    "Referer": ANIMEPAHE_BASE_URL,
+    "Accept-Language": "en-US,en;q=0.9",
+    "Cookie": "__ddg2_=; res=1080; aud=jpn;",
+};
 
 
 // 🌟 Fetch anime data and render home.ejs
 app.get("/", async (req, res) => {
     const cacheKeyAnime = "recent-anime";
     const cacheKeyTrending = "trending-anime";
+    const cacheKeyGenreThriller = "thriller-anime";
 
     const cachedAnime = cache.get(cacheKeyAnime);
     const cachedTrending = cache.get(cacheKeyTrending);
+    const cacheGenreThriller = cache.get(cacheKeyGenreThriller);
 
     // ✅ Serve from cache if available
-    if (cachedAnime && cachedTrending) {
-        console.log("✅ Serving both anime list and trending list from cache");
-        return res.render("home", { animeList: cachedAnime, trendingList: cachedTrending });
+    if (cachedAnime && cachedTrending && cacheGenreThriller) {
+        console.log("✅ Serving both anime list, trending list and thriller list from cache");
+        return res.render("home", { animeList: cachedAnime, trendingList: cachedTrending, thrillerList: cacheGenreThriller });
     }
 
     const url = `${ANIMEPAHE_BASE_URL}/api?m=airing&page=1`;
@@ -48,7 +59,19 @@ app.get("/", async (req, res) => {
     };
 
     try {
-        // ✅ Fetch mappedResults only if not cached
+
+        // ✅ Fetch thrillerResult only if not cached
+        let thrillerResults;
+        if (cacheGenreThriller) {
+            console.log("✅ Serving thriller results from cache");
+            thrillerResults = cacheGenreThriller;
+        } else {
+            thrillerResults = await mapAniListToAnimePaheThriller();
+            cache.set(cacheKeyGenreThriller, thrillerResults, 1800); // Cache for 30 minutes
+            console.log("🚀 Fetched thriller results and cached");
+        }
+
+        // ✅ Fetch Trending only if not cached
         let mappedResults;
         if (cachedTrending) {
             console.log("✅ Serving mapped results from cache");
@@ -71,10 +94,10 @@ app.get("/", async (req, res) => {
             console.log("🚀 Fetched anime list and cached");
         }
 
-        res.render("home", { animeList, trendingList: mappedResults });
+        res.render("home", { animeList, trendingList: mappedResults, thrillerList: thrillerResults });
     } catch (error) {
         console.error("❌ Error fetching data:", error);
-        res.render("home", { animeList: [], trendingList: [] });
+        res.render("home", { animeList: [], trendingList: [], thrillerList: [] });
     }
 });
 
@@ -166,7 +189,7 @@ app.get("/anime/:id/:session?", async (req, res) => {
                     console.error("Error fetching AniList data:", error);
                 }
             }
-            getAnimeTrailer(animeData.anilistId);
+            animeData.trailer = await getAnimeTrailer(animeData.anilistId);
 
             // ✅ Fetch Episodes
             try {
@@ -246,9 +269,6 @@ function Headers(sessionId) {
     };
 }
 
-const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
-const ANIMEPAHE_SEARCH_URL = "https://animepahe.ru/api";
-
 // ✅ Step 1: Query AniList API for Trending Anime
 async function getTrendingAnime() {
     const query = `
@@ -284,15 +304,14 @@ async function getTrendingAnime() {
     }
 }
 
-const headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
-    "Referer": ANIMEPAHE_BASE_URL,
-    "Accept-Language": "en-US,en;q=0.9",
-    "Cookie": "__ddg2_=; res=1080; aud=jpn;",
-};
-
 // ✅ Step 2: Search AnimePahe by AniList ID
 async function searchAnimePahe(anilistId, title) {
+    const headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+        "Referer": ANIMEPAHE_BASE_URL,
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cookie": "__ddg2_=; res=1080; aud=jpn;",
+    };
     try {
         const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`,  { headers });
         const results = response.data.data;
@@ -360,6 +379,96 @@ async function mapAniListToAnimePahe() {
     return mappedResults;
 }
 
+// ======================Thriller====================== //
+
+// ✅ Step 1: Query AniList API for Trending Anime
+async function getThrillerAnime() {
+    const query = `
+        query {
+            Page(perPage: 10) { 
+                media(sort: POPULARITY_DESC, type: ANIME, genre: "Thriller") {
+                    id
+                    type
+                    duration
+                    season
+                    seasonYear
+                    format
+                    status
+                    episodes
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(ANILIST_GRAPHQL_URL, { query });
+        return response.data.data.Page.media;
+    } catch (error) {
+        console.error("Error fetching trending anime from AniList:", error);
+        return [];
+    }
+}
+
+// ✅ Step 2: Search AnimePahe by AniList ID
+async function searchAnimePaheThriller(anilistId, title) {
+    try {
+        const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`, { headers });
+        const results = response.data.data;
+
+        if (!results || results.length === 0) {
+            return null;
+        }
+
+        // Find anime with matching AniList ID
+        return results.find(anime => anime.anilist_id === anilistId) || results[0]; // Fallback to first result
+    } catch (error) {
+        console.error(`Error searching AnimePahe for ${title}:`, error);
+        return null;
+    }
+}
+
+// ✅ Step 3: Map AniList to AnimePahe
+async function mapAniListToAnimePaheThriller() {
+    const thrillerAnime = await getThrillerAnime();
+    let thrillerResults = [];
+
+    for (const anime of thrillerAnime) {
+        const { id, title } = anime;
+        const searchTitle = title.romaji || title.english || title.native;
+        const animeCover = anime.coverImage.extraLarge;
+        const season = `${anime.season} ${anime.seasonYear}`;
+        const duration = `${anime.format} ${anime.duration}mins`;
+        const format = anime.format;
+        const status = anime.status;
+        const episodes = anime.episodes;
+
+        const animepaheResult = await searchAnimePaheThriller(id, searchTitle);
+
+        thrillerResults.push({
+            anilist_id: id,
+            anilist_title: searchTitle,
+            anilist_cover: animeCover,
+            season,
+            duration,
+            format,
+            status,
+            episodes,
+            animepahe: animepaheResult
+                ? { session: animepaheResult.session, title: animepaheResult.title }
+                : { session: "#", title: "Unknown" }
+        });
+    }
+
+    return thrillerResults;
+}
 
 // Start the server
 const PORT = process.env.PORT || 4000;
