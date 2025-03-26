@@ -116,9 +116,19 @@
                             <div class="trailer mb-32">
                                 <h4 style="margin-bottom: 15px; color: #fff; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"><%= animeData.title %> <%= currentEpisode %></h4>
                                 <div class="row">
-                                    <div class="col-lg-6 videoplayer no_variable_height">
+                                    <% if (sources && sources.length > 0) { %>
+                                        <!-- Show video player if sources exist -->
+                                        <div class="col-lg-6 videoplayer no_variable_height">
                                             <video class="players" id="player" poster="<%= animeData.animeCover %>" controls></video>
-                                    </div>
+                                        </div>
+                                    <% } else { %>
+                                        <!-- Show poster if sources are empty -->
+                                        <div class="col-lg-6 poster no_variable_height">
+                                            <img src="https://natomanga-graphql-api.onrender.com/proxy-image?url=<%= animeData.animePoster %>" 
+                                                 alt="<%= animeData.title %>" 
+                                                 style="height: 650px; width: 100%; object-fit: cover; border-radius: 15px;">
+                                        </div>
+                                    <% } %>                                    
                                     <div class="col-lg-6 detail_hide">
                                         <div class="content">
                                             <h2 class="color-white mb-8" id="anime_title"><%= animeData.title %></h2>
