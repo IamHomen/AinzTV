@@ -96,7 +96,6 @@
                     <nav class="mobile-navar d-xl-none">
                         <ul>
                             <li><a href="/">Home</a></li>
-            
                         </ul>    
                     </nav>
                 </div>
@@ -512,146 +511,39 @@
                                 </button>
                             </div>
                         </div>
+                
                         <div class="suggestion-slider suggestion-slider-2">
-                            <div class="featured-card">
-                                <img src="images/anime-card-5.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
+                            <% if (shounenList.length > 0) { %>
+                                <% shounenList.forEach(anime => { %>
+                                    <div class="featured-card">
+                                        <img src="<%= anime.anilist_cover %>" alt="<%= anime.animepahe.title %>">
+                                        <div class="content">
+                                            <a href="/anime/<%= anime.animepahe.session %>">
+                                                <h3 class="color-white mb-32"><%= anime.animepahe.title %></h3>
+                                            </a>
+                                            <ul class="card-tag-st unstyled">
+                                                <li><h5 class="color-primary"><%= anime.season %></h5></li>
+                                                <li class="tag"><h6><%= anime.status %></h6></li>
+                                                <li class="tag"><h6 class="color-primary">Episode <%= anime.episodes %></h6></li>
+                                            </ul>
+                                            <h5 class="mb-32"><%= anime.duration %></h5>
+                                            <div class="d-flex align-items-center">
+                                                <a href="/anime/<%= anime.animepahe.session %>" class="cus-btn filled">
+                                                    <i class="far fa-play"></i> Play
+                                                </a>
+                                                <a href="/anime/<%= anime.animepahe.session %>" class="cus-btn bordered ms-16">
+                                                    <i class="fal fa-info-circle"></i> More Info
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-6_1.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-21.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-14.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-2_1.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-1_1.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-9.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="featured-card">
-                                <img src="images/anime-card-10_1.png" alt="">
-                                <div class="content">
-                                    <a href="/anime/"><h3 class="color-white mb-32">Silent Voice</h3></a>
-                                    <ul class="card-tag-st unstyled">
-                                        <li><h5 class="color-primary">New</h5></li>
-                                        <li class="tag"><h6>18+</h6></li>
-                                        <li class="tag"><h6 class="color-primary">HD</h6></li>
-                                        <li class="tag"><h6>CC</h6></li>
-                                    </ul>
-                                    <h5 class="mb-32">Movie 1hr 45m</h5>
-                                    <div class="d-flex align-items-center">
-                                        <a href="/anime/" class="cus-btn filled"><i class="far fa-play"></i>Play</a>
-                                        <a href="/anime/" class="cus-btn bordered ms-16"> <i class="fal fa-info-circle"></i>More Info</a>
-                                    </div>
-                                </div>
-                            </div>
+                                <% }) %>
+                            <% } else { %>
+                                <p class="color-white">No Shounen anime found.</p>
+                            <% } %>
                         </div>
                     </div>
-                </section>
+                </section>                
                 <!-- Shounen Area end -->
     
                 <!-- popular categories Area start -->

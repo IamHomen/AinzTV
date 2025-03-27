@@ -39,21 +39,33 @@ app.get("/", async (req, res) => {
     const cacheKeyAnime = "recent-anime";
     const cacheKeyTrending = "trending-anime";
     const cacheKeyGenreThriller = "thriller-anime";
+    const cacheKeyTagShounen = "shounen-anime";
 
     const cachedAnime = cache.get(cacheKeyAnime);
     const cachedTrending = cache.get(cacheKeyTrending);
     const cacheGenreThriller = cache.get(cacheKeyGenreThriller);
+    const cacheTagShounen = cache.get(cacheKeyTagShounen);
 
     // ✅ Serve from cache if available
-    if (cachedAnime && cachedTrending && cacheGenreThriller) {
-        console.log("✅ Serving both anime list, trending list and thriller list from cache");
-        return res.render("home", { animeList: cachedAnime, trendingList: cachedTrending, thrillerList: cacheGenreThriller });
+    if (cachedAnime && cachedTrending && cacheGenreThriller && cacheTagShounen) {
+        console.log("✅ Serving both anime list, trending list, thriller list and shounen list from cache");
+        return res.render("home", { animeList: cachedAnime, trendingList: cachedTrending, thrillerList: cacheGenreThriller, shounenList: cacheTagShounen });
     }
 
     const url = `${ANIMEPAHE_BASE_URL}/api?m=airing&page=1`;
-
+    //============== Shounen ============//
     try {
-
+        // ✅ Fetch ShounenTag only if not cached
+        let shounenResults;
+        if (cacheTagShounen) {
+            console.log("✅ Serving thriller results from cache");
+            shounenResults = cacheTagShounen;
+        } else {
+            shounenResults = await mapAniListToAnimePaheShounen();
+            cache.set(cacheKeyTagShounen, shounenResults, 1800); // Cache for 30 minutes
+            console.log("🚀 Fetched Shounen results and cached");
+        }
+        //============== ThrillerGenre ============//
         // ✅ Fetch thrillerResult only if not cached
         let thrillerResults;
         if (cacheGenreThriller) {
@@ -64,7 +76,7 @@ app.get("/", async (req, res) => {
             cache.set(cacheKeyGenreThriller, thrillerResults, 1800); // Cache for 30 minutes
             console.log("🚀 Fetched thriller results and cached");
         }
-
+        //============== Trending ============//
         // ✅ Fetch Trending only if not cached
         let mappedResults;
         if (cachedTrending) {
@@ -75,7 +87,7 @@ app.get("/", async (req, res) => {
             cache.set(cacheKeyTrending, mappedResults, 1800); // Cache for 30 minutes
             console.log("🚀 Fetched mapped results and cached");
         }
-
+        //============== Recent Update ============//
         // ✅ Fetch recent anime if not cached
         let animeList;
         if (cachedAnime) {
@@ -88,7 +100,7 @@ app.get("/", async (req, res) => {
             console.log("🚀 Fetched anime list and cached");
         }
 
-        res.render("home", { animeList, trendingList: mappedResults, thrillerList: thrillerResults });
+        res.render("home", { animeList, trendingList: mappedResults, thrillerList: thrillerResults, shounenList: shounenResults });
     } catch (error) {
         console.error("❌ Error fetching data:", error);
         res.render("home", { animeList: [], trendingList: [], thrillerList: [] });
@@ -134,8 +146,6 @@ app.get("/anime/:id/:session?", async (req, res) => {
                 recommendations: [],
                 episodes: [],
             };
-
-            const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
 
             async function getAnimeTrailer(anilistId) {
                 const query = `
@@ -184,6 +194,32 @@ app.get("/anime/:id/:session?", async (req, res) => {
                 }
             }
             animeData.trailer = await getAnimeTrailer(animeData.anilistId);
+
+            // Fetch Relation
+            $('div.anime-relation .col-sm-6').each((i, el) => {
+                animeData.relations.push({
+                    id: $(el).find('.col-2 > a').attr('href') ? $(el).find('.col-2 > a').attr('href').split('/')[2] : null,
+                    title: $(el).find('.col-2 > a').attr('title') || '',
+                    image: $(el).find('.col-2 > a > img').attr('src') || $(el).find('.col-2 > a > img').attr('data-src') || '',
+                    url: `/anime/${$(el).find('.col-2 > a').attr('href') ? $(el).find('.col-2 > a').attr('href').split('/')[2] : ''}`,
+                    releaseDate: $(el).find('div.col-9 > a').text().trim() || '',
+                    type: $(el).find('div.col-9 > strong').text().trim() || '',
+                    relationType: $(el).find('h4 > span').text().trim() || ''
+                });
+            });
+
+            // Fetch Recommendations
+            $('div.anime-recommendation .col-sm-6').each((i, el) => {
+                animeData.recommendations.push({
+                    id: $(el).find('.col-2 > a').attr('href') ? $(el).find('.col-2 > a').attr('href').split('/')[2] : null,
+                    title: $(el).find('.col-2 > a').attr('title') || '',
+                    image: $(el).find('.col-2 > a > img').attr('src') || $(el).find('.col-2 > a > img').attr('data-src') || '',
+                    url: `/anime/${$(el).find('.col-2 > a').attr('href') ? $(el).find('.col-2 > a').attr('href').split('/')[2] : ''}`,
+                    releaseDate: $(el).find('div.col-9 > a').text().trim() || '',
+                    type: $(el).find('div.col-9 > strong').text().trim() || ''
+                });
+            });
+
 
             // ✅ Fetch Episodes
             try {
@@ -307,7 +343,7 @@ async function searchAnimePahe(anilistId, title) {
         "Cookie": "__ddg2_=; res=1080; aud=jpn;",
     };
     try {
-        const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`,  { headers });
+        const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`, { headers });
         const results = response.data.data;
 
         if (!results || results.length === 0) {
@@ -330,14 +366,14 @@ async function mapAniListToAnimePahe() {
     const formatAiringDate = (timestamp) => {
         if (!timestamp) return "TBA";
         const date = new Date(timestamp * 1000);
-        return date.toLocaleString("en-US", { 
-            weekday: "short", 
-            month: "short", 
-            day: "2-digit", 
-            year: "numeric", 
-            hour: "2-digit", 
-            minute: "2-digit", 
-            hour12: true 
+        return date.toLocaleString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
         });
     };
 
@@ -347,12 +383,12 @@ async function mapAniListToAnimePahe() {
         const animeCover = anime.coverImage.extraLarge;
         const type = anime.type;
         const duration = anime.duration ? `${anime.duration} min` : "Unknown";
-        
-        const nextAiringEpisode = anime.nextAiringEpisode 
+
+        const nextAiringEpisode = anime.nextAiringEpisode
             ? {
                 episode: anime.nextAiringEpisode.episode,
                 airingAt: formatAiringDate(anime.nextAiringEpisode.airingAt)
-            } 
+            }
             : { episode: "?", airingAt: "TBA" };
 
         const animepaheResult = await searchAnimePahe(id, searchTitle);
@@ -462,6 +498,97 @@ async function mapAniListToAnimePaheThriller() {
     }
 
     return thrillerResults;
+}
+
+// ======================ShounenTag====================== //
+
+// ✅ Step 1: Query AniList API for Trending Anime
+async function getShounenAnime() {
+    const query = `
+        query {
+            Page(perPage: 10) { 
+                media(sort: POPULARITY_DESC, type: ANIME, tag: "Shounen", status: RELEASING) {
+                    id
+                    type
+                    duration
+                    season
+                    seasonYear
+                    format
+                    status
+                    episodes
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(ANILIST_GRAPHQL_URL, { query });
+        return response.data.data.Page.media;
+    } catch (error) {
+        console.error("Error fetching trending anime from AniList:", error);
+        return [];
+    }
+}
+
+// ✅ Step 2: Search AnimePahe by AniList ID
+async function searchAnimePaheShounen(anilistId, title) {
+    try {
+        const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`, { headers });
+        const results = response.data.data;
+
+        if (!results || results.length === 0) {
+            return null;
+        }
+
+        // Find anime with matching AniList ID
+        return results.find(anime => anime.anilist_id === anilistId) || results[0]; // Fallback to first result
+    } catch (error) {
+        console.error(`Error searching AnimePahe for ${title}:`, error);
+        return null;
+    }
+}
+
+// ✅ Step 3: Map AniList to AnimePahe
+async function mapAniListToAnimePaheShounen() {
+    const ShounenAnime = await getShounenAnime();
+    let shounenResults = [];
+
+    for (const anime of ShounenAnime) {
+        const { id, title } = anime;
+        const searchTitle = title.romaji || title.english || title.native;
+        const animeCover = anime.coverImage.extraLarge;
+        const season = `${anime.season} ${anime.seasonYear}`;
+        const duration = `${anime.format} ${anime.duration}mins`;
+        const format = anime.format;
+        const status = anime.status;
+        const episodes = anime.episodes;
+
+        const animepaheResult = await searchAnimePaheShounen(id, searchTitle);
+
+        shounenResults.push({
+            anilist_id: id,
+            anilist_title: searchTitle,
+            anilist_cover: animeCover,
+            season,
+            duration,
+            format,
+            status,
+            episodes,
+            animepahe: animepaheResult
+                ? { session: animepaheResult.session, title: animepaheResult.title }
+                : { session: "#", title: "Unknown" }
+        });
+    }
+
+    return shounenResults;
 }
 
 // Start the server
