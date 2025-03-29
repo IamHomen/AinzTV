@@ -531,7 +531,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const formattedSources = videoSources.map(source => {
     const match = source.quality.match(/(\d+)p/); // Extract quality number
     return {
-      file: `https://prox.aniplaynow.live/fetch?url=${encodeURIComponent(source.url)}&ref=https://kwik.si`,
+      file: `https://prox.aniplaynow.live/yukiprox?url=${encodeURIComponent(source.url)}&ref=https://kwik.si`,
       label: match ? parseInt(match[1]) : 360 // Default to 360 if no match
     };
   }).sort((a, b) => b.label - a.label); // Sort by highest resolution first
