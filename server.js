@@ -22,6 +22,7 @@ app.set("views", path.join(__dirname, "views")); // Ensure views are loaded from
 app.use(express.static(path.join(__dirname, "public")));
 
 const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
+const cache2 = new NodeCache({ stdTTL: 600, checkperiod: 120 });
 const ANIMEPAHE_BASE_URL = "https://animepahe.ru";
 const ANILIST_GRAPHQL_URL = "https://graphql.anilist.co";
 const ANIMEPAHE_SEARCH_URL = "https://animepahe.ru/api";
@@ -104,6 +105,28 @@ app.get("/", async (req, res) => {
     } catch (error) {
         console.error("❌ Error fetching data:", error);
         res.render("home", { animeList: [], trendingList: [], thrillerList: [] });
+    }
+});
+
+app.get("/anime/tags/:tags", async (req, res) => {
+    const { tags } = req.params;
+    const page = parseInt(req.query.page) || 1; // Get page from query, default to 1
+    const cacheKey = `anime-${tags}-page-${page}`;
+    let animeData = cache.get(cacheKey);
+
+    if (animeData) {
+        console.log("✅ Serving cached anime list");
+        return res.render("filter", { animeList: animeData.animeList, page, hasNextPage: animeData.hasNextPage, tags });
+    }
+
+    try {
+        console.log("🚀 Fetching fresh data...");
+        const { animeList, hasNextPage } = await mapAniListToAnimePaheTag(tags, page);
+        cache.set(cacheKey, { animeList, hasNextPage }, 1800);
+        res.render("filter", { animeList, page, hasNextPage, tags });
+    } catch (error) {
+        console.error("❌ Error fetching data:", error);
+        res.render("filter", { animeList: [], page, hasNextPage: false, tags });
     }
 });
 
@@ -299,6 +322,114 @@ function Headers(sessionId) {
     };
 }
 
+// Tags 
+// ✅ Get AniList Anime by Tag
+async function getTagAnime(tag, page) {
+    const query = `
+        query ($tag: [String], $page: Int) {
+            Page(page: $page, perPage: 20) { 
+                media(sort: POPULARITY_DESC, type: ANIME, tag_in: $tag) {
+                    id
+                    type
+                    duration
+                    season
+                    format
+                    episodes
+                    status
+                    genres
+                    seasonYear
+                    nextAiringEpisode {
+                        airingAt
+                        episode
+                    }
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                    coverImage {
+                        extraLarge
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                }
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(ANILIST_GRAPHQL_URL, {
+            query,
+            variables: { tag: [tag], page }
+        });
+
+        return {
+            animeList: response.data.data.Page.media,
+            hasNextPage: response.data.data.Page.pageInfo.hasNextPage
+        };
+    } catch (error) {
+        console.error("Error fetching AniList data:", error);
+        return { animeList: [], hasNextPage: false };
+    }
+}
+
+
+// ✅ Search AnimePahe by AniList ID
+async function searchAnimePaheTag(anilistId, title) {
+    try {
+        const response = await axios.get(`${ANIMEPAHE_SEARCH_URL}?m=search&l=8&q=${encodeURIComponent(title)}`, { headers });
+        const results = response.data.data;
+
+        if (!results || results.length === 0) {
+            return null;
+        }
+
+        return results.find(anime => anime.anilist_id === anilistId) || results[0]; // Fallback to first result
+    } catch (error) {
+        console.error(`Error searching AnimePahe for ${title}:`, error);
+        return null;
+    }
+}
+
+// ✅ Map AniList to AnimePahe
+async function mapAniListToAnimePaheTag(tag, page) {
+    const { animeList, hasNextPage } = await getTagAnime(tag, page);
+    let mappedResults = [];
+
+    for (const anime of animeList) {
+        const { id, title } = anime;
+        const searchTitle = title.romaji || title.english || title.native;
+        const animeCover = anime.coverImage.extraLarge;
+        const season = `${anime.season} ${anime.seasonYear}`;
+        const duration = `${anime.format} ${anime.duration}mins`;
+        const format = anime.format;
+        const status = anime.status;
+        const episodes = anime.episodes;
+        const tags = tag;
+        const animepaheResult = await searchAnimePaheTag(id, searchTitle);
+
+        mappedResults.push({
+            tags: tags,
+            anilist_id: id,
+            anilist_title: searchTitle,
+            anilist_cover: animeCover,
+            season,
+            duration,
+            format,
+            status,
+            episodes,
+            animepahe: animepaheResult
+                ? { session: animepaheResult.session, title: animepaheResult.title }
+                : { session: "#", title: "Unknown" }
+        });
+    }
+
+    return { animeList: mappedResults, hasNextPage };
+}
+
+
+// Trending 
 // ✅ Step 1: Query AniList API for Trending Anime
 async function getTrendingAnime() {
     const query = `
@@ -590,6 +721,45 @@ async function mapAniListToAnimePaheShounen() {
 
     return shounenResults;
 }
+
+// Proxy m3u8 request with caching
+app.get("/ainz", async (req, res) => {
+    const m3u8Url = req.query.url;
+
+    if (!m3u8Url) {
+        return res.status(400).json({ error: "Missing m3u8 URL" });
+    }
+
+    // Check cache first
+    const cachedResponse = cache2.get(m3u8Url);
+    if (cachedResponse) {
+        console.log("Cache hit:", m3u8Url);
+        res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
+        return res.send(cachedResponse);
+    }
+
+    try {
+        console.log("Fetching from source:", m3u8Url);
+        
+        // Fetch the m3u8 file
+        const response = await axios.get(m3u8Url, {
+            headers: {
+                "Referer": "https://kwik.cx/", // Modify if needed
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+            },
+            responseType: "text",
+        });
+
+        // Cache the response
+        cache2.set(m3u8Url, response.data);
+
+        // Set correct content type
+        res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch m3u8 file" });
+    }
+});
 
 // Start the server
 const PORT = process.env.PORT || 4000;
